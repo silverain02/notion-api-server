@@ -15,6 +15,9 @@ app.use(
   })
 );
 
+// OPTIONS 프리플라이트 처리 (PATCH용)
+app.options("/notion/like/:id", cors());
+
 // 2. Body 파싱
 app.use(express.json());
 
