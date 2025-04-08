@@ -15,17 +15,7 @@ app.use(
   })
 );
 
-// 2. OPTIONS 요청 핸들링
-app.options(
-  "*",
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
-
-// 3. Body 파싱
+// 2. Body 파싱
 app.use(express.json());
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
