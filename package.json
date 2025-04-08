@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node --loader ts-node/esm server.ts"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@notionhq/client": "^2.3.0",
