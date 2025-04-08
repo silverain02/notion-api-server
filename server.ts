@@ -36,8 +36,8 @@ app.get("/notion", async (req: Request, res: Response) => {
   }
 });
 
-app.patch("/notion/like/:id", async (req: Request, res: Response) => {
-  console.log("PATCH 요청 도달:", req.params.id);
+app.post("/notion/like/:id", async (req: Request, res: Response) => {
+  console.log("post 요청 도달:", req.params.id);
   const pageId = req.params.id;
 
   try {
