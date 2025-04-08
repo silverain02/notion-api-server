@@ -1,5 +1,4 @@
-// server.ts
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { Client } from "@notionhq/client";
@@ -7,12 +6,13 @@ import { Client } from "@notionhq/client";
 dotenv.config();
 
 const app = express();
-app.use(cors()); // CORS 허용
+app.use(cors());
+app.use(express.json());
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const databaseId = process.env.NOTION_DATABASE_ID as string;
 
-app.get("/notion", async (req, res) => {
+app.get("/notion", async (req: Request, res: Response) => {
   try {
     const db = await notion.databases.retrieve({ database_id: databaseId });
     const query = await notion.databases.query({ database_id: databaseId });
@@ -24,13 +24,16 @@ app.get("/notion", async (req, res) => {
   }
 });
 
-app.patch("/notion/:id/like", async (req, res) => {
+app.patch("/notion/like/:id", async (req: Request, res: Response) => {
   const pageId = req.params.id;
 
   try {
-    const page = await notion.pages.retrieve({ page_id: pageId });
-    const currentLikes = page.properties["likes"].number ?? 0;
+    // 먼저 해당 페이지의 현재 데이터를 가져와서 likes 수를 확인
+    const page = (await notion.pages.retrieve({ page_id: pageId })) as any;
 
+    const currentLikes = page.properties["likes"]?.number ?? 0;
+
+    // likes +1로 업데이트
     await notion.pages.update({
       page_id: pageId,
       properties: {
@@ -40,14 +43,14 @@ app.patch("/notion/:id/like", async (req, res) => {
       },
     });
 
-    res.json({ newLikes: currentLikes + 1 });
+    res.json({ success: true, updatedLikes: currentLikes + 1 });
   } catch (error) {
-    console.error("Error updating like:", error);
-    res.status(500).send("Failed to update like");
+    console.error("Error updating likes:", error);
+    res.status(500).json({ error: "Failed to update likes" });
   }
 });
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
