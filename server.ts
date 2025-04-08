@@ -9,7 +9,7 @@ const app = express();
 // 1. CORS middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://react-opimistic-update.vercel.app",
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
