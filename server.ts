@@ -6,6 +6,7 @@ import { Client } from "@notionhq/client";
 dotenv.config();
 
 const app = express();
+// 1. CORS middleware
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -13,6 +14,18 @@ app.use(
     credentials: true,
   })
 );
+
+// 2. OPTIONS 요청 핸들링
+app.options(
+  "*",
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// 3. Body 파싱
 app.use(express.json());
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
@@ -31,6 +44,7 @@ app.get("/notion", async (req: Request, res: Response) => {
 });
 
 app.patch("/notion/like/:id", async (req: Request, res: Response) => {
+  console.log("PATCH 요청 도달:", req.params.id);
   const pageId = req.params.id;
 
   try {
