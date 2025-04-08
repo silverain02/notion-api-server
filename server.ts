@@ -6,7 +6,13 @@ import { Client } from "@notionhq/client";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
