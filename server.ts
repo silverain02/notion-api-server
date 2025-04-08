@@ -24,6 +24,29 @@ app.get("/notion", async (req, res) => {
   }
 });
 
+app.patch("/notion/:id/like", async (req, res) => {
+  const pageId = req.params.id;
+
+  try {
+    const page = await notion.pages.retrieve({ page_id: pageId });
+    const currentLikes = page.properties["likes"].number ?? 0;
+
+    await notion.pages.update({
+      page_id: pageId,
+      properties: {
+        likes: {
+          number: currentLikes + 1,
+        },
+      },
+    });
+
+    res.json({ newLikes: currentLikes + 1 });
+  } catch (error) {
+    console.error("Error updating like:", error);
+    res.status(500).send("Failed to update like");
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
